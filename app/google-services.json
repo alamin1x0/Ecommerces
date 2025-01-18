@@ -1,0 +1,77 @@
+{
+  "project_info": {
+    "project_number": "545773923896",
+    "firebase_url": "https://invoice-fly-default-rtdb.firebaseio.com",
+    "project_id": "invoice-fly",
+    "storage_bucket": "invoice-fly.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:545773923896:android:cc55324787effcd641c0cd",
+        "android_client_info": {
+          "package_name": "com.developeralamin.ecommerceapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "545773923896-c1l07r3r7cqp58uk0np793oj94a1mokn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDxXnvBTJ_JGTE4EYoro0A29F6R7RzNH7c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "545773923896-c1l07r3r7cqp58uk0np793oj94a1mokn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:545773923896:android:eb4f8ce11c1658b741c0cd",
+        "android_client_info": {
+          "package_name": "com.tariqul4gb.invoicefly"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "545773923896-es5mlp37na0ooh424ac4os1g3ev8q659.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tariqul4gb.invoicefly",
+            "certificate_hash": "e015aed062b0272d0035028439be31fed1f98d6d"
+          }
+        },
+        {
+          "client_id": "545773923896-c1l07r3r7cqp58uk0np793oj94a1mokn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDxXnvBTJ_JGTE4EYoro0A29F6R7RzNH7c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "545773923896-c1l07r3r7cqp58uk0np793oj94a1mokn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

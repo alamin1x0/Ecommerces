@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">EShopping</string>
+    <string name="remember_username">Remember Username</string>
+    <string name="login">Login</string>
+    <string name="here">Here</string>
+    <string name="already_member">Already Account</string>
+    <string name="new_member">New Account</string>
+    <string name="register">Register</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="phone_number">Phone</string>
+    <string name="logout">Logout</string>
+    <string name="email">Email</string>
+    <string name="powered_by">Powered By</string>
+    <string name="password">Password</string>
+    <string name="sign_up">Sign Up</string>
+
+    <string name="intro_title">Welcome to <font color="#39c7a5"> Digital Store</font>\n a <font color="#39c7a5">Gateway</font> to the Latest Tech</string>
+    <string name="recommendation">Recommendation</string>
+    <string name="see_all">See all</string>
+    <string name="subtotal">Subtotal</string>
+    <string name="fee_delivery">Fee Delivery</string>
+    <string name="total_tax">Total Tax</string>
+    <string name="payment_method">Payment Method</string>
+    <string name="cash_pay">Pay Cash When the medicine arrives  the destination</string>
+
+</resources>
