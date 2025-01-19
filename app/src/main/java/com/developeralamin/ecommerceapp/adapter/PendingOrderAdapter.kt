@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.developeralamin.ecommerceapp.R
 import com.developeralamin.ecommerceapp.databinding.OrderItemListBinding
 import com.developeralamin.ecommerceapp.model.PendingOrder
+import com.developeralamin.ecommerceapp.ui.OrderTrackingActivity
 import com.developeralamin.ecommerceapp.utils.Constant
 
 
@@ -66,7 +67,6 @@ class PendingOrderAdapter(val list: List<PendingOrder>, val context: Context) :
             }
         }
 
-/*
         holder.binding.root.setOnClickListener {
             val intent = Intent(holder.itemView.context, OrderTrackingActivity::class.java).apply {
                 putExtra("object", item)
@@ -74,7 +74,6 @@ class PendingOrderAdapter(val list: List<PendingOrder>, val context: Context) :
             ContextCompat.startActivity(holder.itemView.context, intent, null)
 
         }
-*/
     }
 
 

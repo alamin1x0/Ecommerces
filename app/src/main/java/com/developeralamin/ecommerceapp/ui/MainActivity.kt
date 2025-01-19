@@ -59,6 +59,14 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, ProfileActivity::class.java))
         }
 
+        binding.cartBtn.setOnClickListener {
+            startActivity(Intent(this, CartActivity::class.java))
+        }
+
+        binding.myOrderBtn.setOnClickListener {
+            startActivity(Intent(this, MyOrderActivity::class.java))
+        }
+
 
     }
 

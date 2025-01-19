@@ -2,10 +2,7 @@ package com.developeralamin.ecommerceapp.model
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.google.firebase.firestore.IgnoreExtraProperties
 
-
-@IgnoreExtraProperties
 data class PendingOrder(
     val amount: Double = 0.0,
     val trxID: String? = null,

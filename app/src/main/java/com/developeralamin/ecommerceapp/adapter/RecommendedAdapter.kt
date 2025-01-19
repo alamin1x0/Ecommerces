@@ -1,11 +1,14 @@
 package com.developeralamin.ecommerceapp.adapter
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.developeralamin.ecommerceapp.databinding.ViewholderRecommonenedBinding
 import com.developeralamin.ecommerceapp.model.ItemsModel
+import com.developeralamin.ecommerceapp.ui.EshopDetailsActivity
 
 
 class RecommendedAdapter(val items: List<ItemsModel>) :
@@ -39,12 +42,12 @@ class RecommendedAdapter(val items: List<ItemsModel>) :
                 .load(item.picUrl[0])
                 .into(pic)
 
-           /* root.setOnClickListener {
+            root.setOnClickListener {
                 val intent = Intent(holder.itemView.context, EshopDetailsActivity::class.java).apply {
                     putExtra("object", item)
                 }
                 ContextCompat.startActivity(holder.itemView.context,intent,null)
-            }*/
+            }
         }
     }
 
