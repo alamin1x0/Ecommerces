@@ -11,7 +11,6 @@ data class PendingOrder(
     val orderNo: String? = null,
     val status: String = "",
     val orderType: String = "",
-    val balanceType: String = "",
     val dateTime: String = "",
     val source: String = "",
     val invoiceNumber: String? = null,
@@ -28,7 +27,6 @@ data class PendingOrder(
         orderNo = parcel.readString(),
         status = parcel.readString()!!,
         orderType = parcel.readString()!!,
-        balanceType = parcel.readString()!!,
         dateTime = parcel.readString()!!,
         source = parcel.readString()!!,
         invoiceNumber = parcel.readString(),
@@ -48,7 +46,6 @@ data class PendingOrder(
         parcel.writeString(orderNo)
         parcel.writeString(status)
         parcel.writeString(orderType)
-        parcel.writeString(balanceType)
         parcel.writeString(dateTime)
         parcel.writeString(source)
         parcel.writeString(invoiceNumber)

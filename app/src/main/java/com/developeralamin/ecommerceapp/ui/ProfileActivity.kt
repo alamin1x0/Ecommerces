@@ -3,6 +3,7 @@ package com.developeralamin.ecommerceapp.ui
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -10,13 +11,16 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.developeralamin.ecommerceapp.R
 import com.developeralamin.ecommerceapp.databinding.ActivityProfileBinding
+import com.developeralamin.ecommerceapp.model.UserModel
 import com.developeralamin.ecommerceapp.utils.Constant
 import com.developeralamin.ecommerceapp.utils.ToastHelper
 import com.developeralamin.ecommerceapp.utils.Utils
+import com.google.firebase.firestore.FirebaseFirestore
 
 class ProfileActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityProfileBinding
+    private lateinit var db: FirebaseFirestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +34,38 @@ class ProfileActivity : AppCompatActivity() {
     private fun click() {
         binding.toolbar.toolbarTittle.text = "Profile"
         binding.toolbar.btnBack.setOnClickListener { finish() }
+
+        db = FirebaseFirestore.getInstance()
+
+
+        val preferencesUserName =
+            this.getSharedPreferences(
+                Constant.PREFERENCE_NAME,
+                MODE_PRIVATE
+            )
+        val userId = preferencesUserName.getString(Constant.PHONE_NUMBER, "")
+
+
+        db.collection(Constant.KEY_COLLECTION_USER).document(userId!!)
+            .addSnapshotListener { value, error ->
+                try {
+                    if (error != null) {
+                        Log.e("Error", "Error fetching user document: ${error.message}")
+                        return@addSnapshotListener
+                    }
+
+                    val userModel = value?.toObject(UserModel::class.java)
+
+                    binding.userName.text = userModel!!.userName
+                    binding.phoneNumber.text = userModel!!.phone
+                    binding.email.text = userModel!!.email
+
+
+                } catch (e: Exception) {
+                    Log.e("Error", "Exception: ${e.message}")
+                    e.printStackTrace()
+                }
+            }
 
 
         binding.logoutLayout.setOnClickListener {
@@ -48,6 +84,10 @@ class ProfileActivity : AppCompatActivity() {
             )
 
 
+        }
+
+        binding.passwordChangeLayout.setOnClickListener {
+            startActivity(Intent(this, PasswordChangeActivity::class.java))
         }
     }
 

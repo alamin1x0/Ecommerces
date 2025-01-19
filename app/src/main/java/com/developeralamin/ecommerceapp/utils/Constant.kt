@@ -13,10 +13,10 @@ object Constant {
     const val KEY_MESSAGE = "message"
     const val KEY_SUPPORT = "support"
     const val KEY_STATUS = "status"
-    const val KEY_COLLECTION_SHOP_ORDER = "shop_order"
     const val KEY_COLLECTION_BANNER = "banner"
     const val KEY_COLLECTION_USERID = "userId"
     const val TAKA_SYMBOL = "৳"
+    const val KEY_COLLECTION_SHOP_ORDER = "shop_order"
 
 
 }

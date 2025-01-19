@@ -16,7 +16,10 @@ import com.developeralamin.ecommerceapp.Helper.ManagmentCart
 import com.developeralamin.ecommerceapp.R
 import com.developeralamin.ecommerceapp.adapter.CartAdapter
 import com.developeralamin.ecommerceapp.databinding.ActivityCartBinding
+import com.developeralamin.ecommerceapp.model.PendingOrder
+import com.developeralamin.ecommerceapp.model.Product
 import com.developeralamin.ecommerceapp.model.UserModel
+import com.developeralamin.ecommerceapp.payment.Constants.amount
 import com.developeralamin.ecommerceapp.payment.Constants.liveData
 import com.developeralamin.ecommerceapp.payment.Constants.merchantInvoiceNumber
 import com.developeralamin.ecommerceapp.payment.Constants.paymentIDBkash
@@ -25,7 +28,9 @@ import com.developeralamin.ecommerceapp.payment.paymenthome.BottomSheetFragment
 import com.developeralamin.ecommerceapp.payment.paymenthome.HomeViewModel
 import com.developeralamin.ecommerceapp.payment.paymenthome.WebViewDialog
 import com.developeralamin.ecommerceapp.utils.Constant
+import com.developeralamin.ecommerceapp.utils.InternetConnection
 import com.developeralamin.ecommerceapp.utils.ToastHelper
+import com.developeralamin.ecommerceapp.utils.Utils
 import com.developeralamin.ecommerceapp.utils.Utils.Companion.generateRandomMerchantInvoiceNumber
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.Firebase
@@ -57,6 +62,7 @@ class CartActivity : AppCompatActivity() {
             setVariable()
             initCartList()
             calculatorCart()
+            initUserAmount()
             binding.checOutBtn.setOnClickListener {
                 performCheckout()
             }
@@ -83,18 +89,47 @@ class CartActivity : AppCompatActivity() {
         }
     }
 
+    private fun initUserAmount() {
+        db = FirebaseFirestore.getInstance()
+
+        val preferencesUserName =
+            this.getSharedPreferences(
+                Constant.PREFERENCE_NAME,
+                MODE_PRIVATE
+            )
+        userId = preferencesUserName.getString(Constant.PHONE_NUMBER, "")
+
+
+        db.collection(Constant.KEY_COLLECTION_USER).document(userId!!)
+            .addSnapshotListener { value, error ->
+                try {
+                    if (error != null) {
+                        Log.e("Error", "Error fetching user document: ${error.message}")
+                        return@addSnapshotListener
+                    }
+
+                    userModel = value?.toObject(UserModel::class.java)
+
+
+                } catch (e: Exception) {
+                    Log.e("Error", "Exception: ${e.message}")
+                    e.printStackTrace()
+                }
+            }
+    }
+
 
     private fun performCheckout() {
         if (selectedPaymentMethod.isEmpty()) {
             ToastHelper.showErrorToast(this, "Please select a payment method")
         } else {
             if (selectedPaymentMethod == "Offline Pay") {
-                //initSendToServer()
+                //  initSendToServer()
                 Toast.makeText(this, "Proceeding with Offline Payment", Toast.LENGTH_SHORT).show()
             } else if (selectedPaymentMethod == "bKash") {
                 Toast.makeText(this, "Proceeding with bKash Payment", Toast.LENGTH_SHORT).show()
 
-                total.toString()
+                amount = total.toString()
                 val merchantInvoiceNumbers = "MT"
                 val newMerchantInvoiceNumber =
                     generateRandomMerchantInvoiceNumber(merchantInvoiceNumbers)
@@ -151,6 +186,37 @@ class CartActivity : AppCompatActivity() {
         viewModel.createPaymentApiCall()
     }
 
+
+    /*    private fun executeBkashPayment() {
+            viewModel.getExecutePaymentObserver().observe(this) {
+                if (it != null) {
+                    val args = Bundle().apply {
+                        putString("statusMessage", it.statusMessage)
+                        putString("trxID", it.trxID)
+                        putString("statusCode", it.statusCode)
+                        putString("amount", total.toString())
+                        putString("paymentID", it.paymentID)
+                        putString("customerMsisdn", it.customerMsisdn)
+                    }
+
+
+
+                    Toast.makeText(this, total.toString(), Toast.LENGTH_SHORT).show()
+
+                    val bottomSheetFragment = BottomSheetFragment().apply {
+                        arguments = args
+                    }
+                    bottomSheetFragment.show(supportFragmentManager, "bottomSheetFragment")
+
+                } else {
+                    Toast.makeText(this, "Error in getting data", Toast.LENGTH_SHORT).show()
+                    queryBkashPayment()
+                }
+            }
+            viewModel.executePaymentApiCall()
+        }*/
+
+
     private fun executeBkashPayment() {
         viewModel.getExecutePaymentObserver().observe(this) {
             if (it != null) {
@@ -163,14 +229,20 @@ class CartActivity : AppCompatActivity() {
                     putString("customerMsisdn", it.customerMsisdn)
                 }
 
-
-                Toast.makeText(this, total.toString(), Toast.LENGTH_SHORT).show()
+                // Save order to Firestore after successful payment
+                if (it.statusCode == "0000") { // Assuming "0000" indicates success
+                    saveOrderToFirestore(it.trxID!!, total)
+                    Toast.makeText(this, "Payment successful. Order saved.", Toast.LENGTH_SHORT)
+                        .show()
+                } else {
+                    Toast.makeText(this, "Payment failed: ${it.statusMessage}", Toast.LENGTH_SHORT)
+                        .show()
+                }
 
                 val bottomSheetFragment = BottomSheetFragment().apply {
                     arguments = args
                 }
                 bottomSheetFragment.show(supportFragmentManager, "bottomSheetFragment")
-
             } else {
                 Toast.makeText(this, "Error in getting data", Toast.LENGTH_SHORT).show()
                 queryBkashPayment()
@@ -178,6 +250,56 @@ class CartActivity : AppCompatActivity() {
         }
         viewModel.executePaymentApiCall()
     }
+
+
+    private fun saveOrderToFirestore(transactionId: String, totalAmount: Double) {
+        db = FirebaseFirestore.getInstance()
+
+        // Get current timestamp
+        val timestamp = System.currentTimeMillis()
+
+        // Generate a random order number
+        getNextOrderNumber { orderNumber ->
+            val pendingOrder = PendingOrder(
+                amount = totalAmount,
+                trxID = transactionId,
+                userId = userId ?: "",
+                orderDate = timestamp.toString(),
+                orderNo = orderNumber,
+                status = "Pending",
+                orderType = selectedPaymentMethod,
+                dateTime = timestamp.toString(),
+                source = "App",
+                invoiceNumber = merchantInvoiceNumber,
+                orderId = Utils.generateUniqueRefNo(),
+                refNo = Utils.generateUniqueRefNo(),
+                productList = managementCart.getListCart().map { cartItem ->
+                    Product(
+                        categoryId = cartItem.categoryId ?: "",
+                        description = cartItem.description ?: "",
+                        model = cartItem.model ?: emptyList(),
+                        numberInCart = cartItem.numberInCart,
+                        picUrl = cartItem.picUrl ?: emptyList(),
+                        price = cartItem.price,
+                        rating = cartItem.rating ?: 0.0,
+                        showRecommended = false,
+                        title = cartItem.title ?: ""
+                    )
+                }
+            )
+
+            // Save order data to Firestore
+            db.collection(Constant.KEY_COLLECTION_SHOP_ORDER).add(pendingOrder)
+                .addOnSuccessListener {
+                    ToastHelper.showSuccessToast(this, "Order placed successfully!")
+                }
+                .addOnFailureListener { e ->
+                    Log.e("Firestore", "Error adding order: ${e.message}")
+                    ToastHelper.showErrorToast(this, "Failed to place order: ${e.message}")
+                }
+        }
+    }
+
 
     private fun queryBkashPayment() {
         viewModel.getQueryPaymentObserver().observe(this) {

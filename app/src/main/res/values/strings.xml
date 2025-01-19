@@ -22,5 +22,8 @@
     <string name="total_tax">Total Tax</string>
     <string name="payment_method">Payment Method</string>
     <string name="cash_pay">Pay Cash When the medicine arrives  the destination</string>
+    <string name="old_password">Old Password</string>
+    <string name="new_password">New Password</string>
+    <string name="conform_password">Conform Password</string>
 
 </resources>
